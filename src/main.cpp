@@ -11,36 +11,29 @@
 #include "hexapod.h"
 
 void setup() {
-    std::ifstream fichier("env.cfg"); // Remplacez "mon_fichier.txt" par le nom de votre fichier
-    std::string ligne;
-    printf("text ok");
+    Serial.begin(115200);
 
-    if (fichier.is_open()) {
-        while (std::getline(fichier, ligne)) {
-            if (ligne.find("runningSide") != std::string::npos) 
-                std::cout << "Le texte contient la sous-chaîne \"" << std::endl;
+    /* Read env.cfg to identify on which board the code is running */
+    std::ifstream file("env.cfg");
+    std::string selectedSide;
+    printf("\n\n[main] - Starting program");
+
+    if (file.is_open()) {
+        int idxFind = 0;
+        while (std::getline(file, selectedSide)) {
+            idxFind = selectedSide.find("selectedSide = ");
+            if (idxFind != int(std::string::npos)) {
+                printf("\nidx find : %d", idxFind);
+            }
         }
-        fichier.close();
+        file.close();
     } else {
-        std::cerr << "Impossible d'ouvrir le fichier." << std::endl;
-    }
-    if (runningSide == esp32Target){
-        printf("Selected side : User esp32 target on board");
-        //espOnBoardInit();
-    }
-    if (runningSide == userController){
-        printf("Selected side : User Controller");
-        //botBoarduinoInit();
-    }
-    if (runningSide == botboarduino){
-        printf("Selected side : Botboarduino");
-        //botBoarduinoInit()
+        printf("\n[main] - Impossible to find file env.cfg");
+        exit(0);
     }
 }
 
 void loop() {
-  printf("FIRST PRINT");
-  printf("text ok");
-  delay(1);
-  // put your main code here, to run repeatedly:
+  printf("\nFIRST PRINT");
+  delay(1000);
 }
